@@ -21,7 +21,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 app.json_encoder = CustomJSONEncoder
 
 def get_db_connection():
-    return pymysql.connect(
+    conn = pymysql.connect(
         host=os.getenv('MYSQL_HOST', 'localhost'),
         port=int(os.getenv('MYSQL_PORT', 3306)),
         user=os.getenv('MYSQL_USER', 'root'),
@@ -30,6 +30,9 @@ def get_db_connection():
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
+    print("Database connection successful")
+    return conn
+
 
 def get_latest_heart_rate():
     conn = None
@@ -145,15 +148,15 @@ def get_latest_data():
     global i
     try:
         i = i + 1
-        latest_heart_rate = i  # Mocked data for testing
+        latest_heart_rate = get_latest_heart_rate()  # Fetch real data instead of mocked
         latest_dht11 = get_latest_dht11()
         latest_bmi = get_latest_bmi()
         historical_data = get_historical_data()
         
-        print("Latest heart rate:", latest_heart_rate)
-        print("Latest DHT11:", latest_dht11)
-        print("Latest BMI:", latest_bmi)
-        print("Historical data:", historical_data)
+        print("Latest heart rate data fetched:", latest_heart_rate)
+        print("Latest DHT11 data fetched:", latest_dht11)
+        print("Latest BMI data fetched:", latest_bmi)
+        print("Historical data fetched:", historical_data)
 
         return jsonify({
             'heart_rate': latest_heart_rate,
@@ -162,9 +165,12 @@ def get_latest_data():
             'historical_data': historical_data
         })
     except Exception as e:
-        print(f"獲取最新數據時出錯: {e}")
+        print(f"Error fetching latest data: {e}")
         return jsonify({'error': str(e)}), 500
+
     
 
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)
+
+

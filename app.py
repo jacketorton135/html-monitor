@@ -32,6 +32,7 @@ def get_db_connection():
     )
 
 def get_latest_heart_rate():
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -50,9 +51,11 @@ def get_latest_heart_rate():
         print(f"獲取心跳數據時出錯: {e}")
         return None
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 def get_latest_dht11():
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -73,9 +76,11 @@ def get_latest_dht11():
         print(f"獲取 DHT11 數據時出錯: {e}")
         return None
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 def get_latest_bmi():
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -93,9 +98,11 @@ def get_latest_bmi():
         print(f"獲取 BMI 數據時出錯: {e}")
         return None
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 def get_historical_data():
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -116,7 +123,9 @@ def get_historical_data():
         print(f"獲取歷史數據時出錯: {e}")
         return []
     finally:
-        conn.close()
+        if conn:
+            conn.close()
+
 
 @app.route('/')
 def index():

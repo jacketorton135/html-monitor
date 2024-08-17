@@ -156,5 +156,6 @@ def get_latest_data():
         print(f"獲取最新數據時出錯: {e}")
         return jsonify({'error': str(e)}), 500
     
+
 if __name__ == '__main__':
     serve(app, host='0.0.0.0', port=5000)

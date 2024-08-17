@@ -7,10 +7,10 @@ from dotenv import load_dotenv
 from waitress import serve
 
 # Load environment variables from .env file
-load_dotenv()
 
-template_dir = r'F:\專案\813\templates'
+template_dir = os.path.join(os.path.dirname(__file__), 'templates')
 app = Flask(__name__, template_folder=template_dir)
+
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):

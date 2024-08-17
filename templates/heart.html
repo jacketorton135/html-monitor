@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>健康監控</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+</head>
+<body>
+    <div class="container mt-5">s
+        <h1 class="text-center mb-4">健康監控</h1>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Temperature & Humidity</h5>
+                        <p class="card-text">Temperature: <span id="temperature"></span>°C</p>
+                        <p class="card-text">Humidity: <span id="humidity"></span>%</p>
+                        <p class="card-text">Body Temperature: <span id="body_temperature"></span>°C</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Heart Rate</h5>
+                        <p class="card-text">BPM: <span id="heart_rate"></span></p>
+                        <p class="card-text">Status: <span id="heart_rate_status"></span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">BMI</h5>
+                        <p class="card-text">BMI: <span id="bmi"></span></p>
+                        <p class="card-text">Status: <span id="bmi_status"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2>歷史數據 Data</h2>
+
+                <canvas id="myChart" width="600" height="400"></canvas> 
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <h2>歷史數據 Data Table</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Value</th>
+                            <th>Status</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for data in 歷史數據_data %}
+                        <tr>
+                            <td>{{ data.時間 }}</td>
+                            <td>{{ data.數值 }}</td>
+                            <td>{{ data.正常_異常 }}</td>
+                            <td>{{ data.備註 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+  
+        function getRandomData() {
+            return Math.floor(Math.random() * 100);
+        }
+        function updateChart(heart_rate,BMI,temperature,body_temperature,humidity) {
+            const currentTime = new Date().toLocaleTimeString();
+
+            // Add new data point
+            if (myChart.data.labels.length >= 10) {
+                myChart.data.labels.shift();
+                myChart.data.datasets[0].data.shift();
+            }
+
+            myChart.data.labels.push(currentTime);
+            myChart.data.datasets[0].data.push(heart_rate);
+            myChart.data.datasets[1].data.push(BMI);
+            myChart.data.datasets[2].data.push(temperature);
+            myChart.data.datasets[3].data.push(body_temperature);
+            myChart.data.datasets[4].data.push(humidity);
+
+            myChart.update();
+            
+        }
+        function updateData() {
+            fetch('/get_latest_data')
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById('temperature').textContent = data.dht11.溫度;
+                    document.getElementById('humidity').textContent = data.dht11.濕度;
+                    document.getElementById('body_temperature').textContent = data.dht11.體溫;
+                    document.getElementById('heart_rate').textContent = data.heart_rate;
+                    document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
+                    document.getElementById('bmi').textContent = data.bmi.BMI;
+                    document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
+                    updateChart(data.heart_rate, data.bmi.BMI,data.dht11.溫度,data.dht11.體溫,data.dht11.濕度);
+ 
+
+
+                    
+                });
+        }
+        function init(){
+            
+        }
+        const ctx = document.getElementById('myChart').getContext('2d');
+
+        // Create a new Chart instance
+        const myChart = new Chart(ctx, {
+            type: 'line', // You can change this to 'bar', 'radar', etc.
+            data: {
+                labels: [], // x-axis labels
+                datasets: [{
+                    label: 'heart_rate',
+                    data: [], // y-axis data
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                },{
+                    label: 'BMI',
+                    data: [], // y-axis data
+                    borderColor: 'rgba(0, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
+                    borderWidth: 1
+                },{
+                    label: 'temperature',
+                    data: [], // y-axis data
+                    borderColor: 'rgba(0, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
+                    borderWidth: 1   
+                },{
+                    label: 'humidity',
+                    data: [], // y-axis data
+                    borderColor: 'rgba(0, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
+                    borderWidth: 1
+                },{
+                    label: 'body_temperature',
+                    data: [], // y-axis data
+                    borderColor: 'rgba(0, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
+                    borderWidth: 1 
+                }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Update data every 5 seconds
+        setInterval(updateData, 2000);
+        updateData();  // Initial update
+
+    </script>
+</body>
+</html>
+  
+

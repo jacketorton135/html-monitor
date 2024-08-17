@@ -3,10 +3,13 @@ import pymysql
 import os
 import json
 from datetime import datetime
+from dotenv import load_dotenv
 
-template_dir = r'F:\專案\813\templates'  # 使用 raw string 來處理 Windows 路徑中的反斜槓
+# Load environment variables from .env file
+load_dotenv()
+
+template_dir = r'F:\專案\813\templates'
 app = Flask(__name__, template_folder=template_dir)
-
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, obj):
@@ -15,13 +18,14 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 app.json_encoder = CustomJSONEncoder
+
 def get_db_connection():
     return pymysql.connect(
-        host='localhost',
-        port=3306,
-        user='root',  # 替換為您的實際 MySQL 用戶名
-        password='oneokrock12345',
-        database='heart rate monitor',
+        host=os.getenv('MYSQL_HOST', 'localhost'),
+        port=int(os.getenv('MYSQL_PORT', 3306)),
+        user=os.getenv('MYSQL_USER', 'root'),
+        password=os.getenv('MYSQL_PASSWORD', ''),
+        database=os.getenv('MYSQL_DATABASE', 'heart rate monitor'),
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
@@ -39,9 +43,7 @@ def get_latest_heart_rate():
                 LIMIT 1
             """)
             heart_rate_data = cursor.fetchone()
-            print("心跳數據:", heart_rate_data)  # 調試打印
-            if not heart_rate_data:
-                print("未找到心跳數據")
+            print("心跳數據:", heart_rate_data)
             return heart_rate_data
     except Exception as e:
         print(f"獲取心跳數據時出錯: {e}")
@@ -104,17 +106,16 @@ def get_historical_data():
                 ORDER BY h.時間戳記 DESC
                 LIMIT 10
             """)
-        for item in historical_data:
-            if '時間戳記' in item:
-                item['時間戳記'] = item['時間戳記'].isoformat()
-        return historical_data
+            historical_data = cursor.fetchall()
+            for item in historical_data:
+                if '時間戳記' in item:
+                    item['時間戳記'] = item['時間戳記'].isoformat()
+            return historical_data
     except Exception as e:
         print(f"獲取歷史數據時出錯: {e}")
         return []
     finally:
         conn.close()
-
-
 
 @app.route('/')
 def index():
@@ -128,13 +129,13 @@ def index():
                            bmi=latest_bmi, 
                            historical_data=historical_data)
 
-i=0
+i = 0
 @app.route('/get_latest_data')
 def get_latest_data():
     global i
     try:
-        i=i+1
-        latest_heart_rate =   i #get_latest_heart_rate()
+        i = i + 1
+        latest_heart_rate = i  # Mocked data for testing
         latest_dht11 = get_latest_dht11()
         latest_bmi = get_latest_bmi()
         historical_data = get_historical_data()

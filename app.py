@@ -21,7 +21,11 @@ class CustomJSONEncoder(json.JSONEncoder):
 app.json_encoder = CustomJSONEncoder
 
 def get_db_connection():
-    conn = pymysql.connect(
+    # Print the environment variables to check their values
+    print("MYSQL_HOST:", os.getenv('MYSQL_HOST'))
+    print("MYSQL_PORT:", os.getenv('MYSQL_PORT'))
+    
+    return pymysql.connect(
         host=os.getenv('MYSQL_HOST', 'localhost'),
         port=int(os.getenv('MYSQL_PORT', 3306)),
         user=os.getenv('MYSQL_USER', 'root'),
@@ -30,8 +34,7 @@ def get_db_connection():
         charset='utf8mb4',
         cursorclass=pymysql.cursors.DictCursor
     )
-    print("Database connection successful")
-    return conn
+
 
 
 def get_latest_heart_rate():

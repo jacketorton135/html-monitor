@@ -4,6 +4,7 @@ import os
 import json
 from datetime import datetime
 from dotenv import load_dotenv
+from waitress import serve
 
 # Load environment variables from .env file
 load_dotenv()
@@ -156,4 +157,4 @@ def get_latest_data():
         return jsonify({'error': str(e)}), 500
     
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)  # Ensure debug is False in production
+    serve(app, host='0.0.0.0', port=5000)

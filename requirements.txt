@@ -5,6 +5,7 @@ waitress==2.0.0
 pandas==2.0.2
 numpy==1.24.2
 requests==2.31.0  # Specify the latest version or the version you need
+chardet==5.1.0  # Specify the version you need or the latest version
 
 
 

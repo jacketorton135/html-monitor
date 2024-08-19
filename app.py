@@ -1,137 +1,98 @@
-from flask import Flask, render_template, jsonify
-import pymysql
-import os
-import json
-from datetime import datetime
-from dotenv import load_dotenv
-from waitress import serve
+import pandas as pd
+import requests
+from io import StringIO
+import numpy as np
+import chardet
 
-# Load environment variables from .env file
+def get_csv_data(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an exception for HTTP errors
 
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-app = Flask(__name__, template_folder=template_dir)
-
-
-class CustomJSONEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, datetime):
-            return obj.isoformat()
-        return super().default(obj)
-
-app.json_encoder = CustomJSONEncoder
-
-def get_db_connection():
-    # Print the environment variables to check their values
-    print("MYSQL_HOST:", os.getenv('MYSQL_HOST'))
-    print("MYSQL_PORT:", os.getenv('MYSQL_PORT'))
-    
-    return pymysql.connect(
-        host=os.getenv('MYSQL_HOST', 'localhost'),
-        port=int(os.getenv('MYSQL_PORT', 3306)),
-        user=os.getenv('MYSQL_USER', 'root'),
-        password=os.getenv('MYSQL_PASSWORD', ''),
-        database=os.getenv('MYSQL_DATABASE', 'heart rate monitor'),
-        charset='utf8mb4',
-        cursorclass=pymysql.cursors.DictCursor
-    )
-
-
+        # Detect encoding and read CSV content
+        result = chardet.detect(response.content)
+        encoding = result['encoding']
+        csv_content = response.content.decode(encoding)
+        
+        # Use StringIO to handle the CSV data
+        df = pd.read_csv(StringIO(csv_content))
+        df.columns = df.columns.str.strip()  # Clean column names
+        df.replace({np.nan: None}, inplace=True)
+        return df
+    except Exception as e:
+        print(f"Error fetching or processing CSV data: {e}")
+        return pd.DataFrame()
 
 def get_latest_heart_rate():
-    conn = None
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    時間戳記, 心跳, 心跳狀態, 
-                    CASE WHEN 心跳_正常_異常 = 1 THEN '正常' ELSE '異常' END AS 心跳_正常_異常
-                FROM heart_rate
-                ORDER BY 時間戳記 DESC
-                LIMIT 1
-            """)
-            heart_rate_data = cursor.fetchone()
-            print("心跳數據:", heart_rate_data)
-            return heart_rate_data
-    except Exception as e:
-        print(f"獲取心跳數據時出錯: {e}")
-        return None
-    finally:
-        if conn:
-            conn.close()
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSULVwFdSh9_HuIJe1dWPae-jzcQYsyYb5DuRfXHtDenUlr1oSYTRr-AQ-aMthcCsNRTcVIbvmt_7qJ/pub?output=csv"
+    df = get_csv_data(url)
+    if not df.empty:
+        latest = df.iloc[-1].to_dict()
+        if '心跳_正常_異常' in latest:
+            latest['心跳_正常_異常'] = '正常' if latest['心跳_正常_異常'] in [0, '0'] else '異常'
+        return latest
+    return {}
 
 def get_latest_dht11():
-    conn = None
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    時間戳記, 溫度, 濕度, 溫度狀態, 濕度狀態,
-                    CASE WHEN 溫度_正常_異常 = 1 THEN '正常' ELSE '異常' END AS 溫度_正常_異常,
-                    CASE WHEN 濕度_正常_異常 = 1 THEN '正常' ELSE '異常' END AS 濕度_正常_異常,
-                    體溫, 體溫狀態,
-                    CASE WHEN 體溫_正常_異常 = 1 THEN '正常' ELSE '異常' END AS 體溫_正常_異常
-                FROM dht11
-                ORDER BY 時間戳記 DESC
-                LIMIT 1
-            """)
-            dht11_data = cursor.fetchone()
-        return dht11_data
-    except Exception as e:
-        print(f"獲取 DHT11 數據時出錯: {e}")
-        return None
-    finally:
-        if conn:
-            conn.close()
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5C_o47POhPXTZEgq40budOJB1ygTTZx9D_086I-ZbHfApFPZB_Ra5Xi09Qu6hxzk9_QXJ-7-QFoKD/pub?output=csv"
+    df = get_csv_data(url)
+    if not df.empty:
+        latest = df.iloc[-1].to_dict()
+        for key in ['溫度_正常_異常', '濕度_正常_異常', '體溫_正常_異常']:
+            if key in latest:
+                latest[key] = '正常' if latest[key] in [0, '0'] else '異常'
+        return latest
+    return {}
 
 def get_latest_bmi():
-    conn = None
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT 
-                    時間戳記, 姓名, 性別, 身高, 體重, BMI, 標準體重, 檢查結果,
-                    CASE WHEN 正常_異常 = 1 THEN '正常' ELSE '異常' END AS 正常_異常
-                FROM bmi
-                ORDER BY 時間戳記 DESC
-                LIMIT 1
-            """)
-            bmi_data = cursor.fetchone()
-        return bmi_data
-    except Exception as e:
-        print(f"獲取 BMI 數據時出錯: {e}")
-        return None
-    finally:
-        if conn:
-            conn.close()
+    url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTbj3f0rhEu2aCljm1AgkPiaqU7XLGfLUfmL_3NVClYABWXmarViEg1RSE4Q9St0YG_rR74VZyNh7MF/pub?output=csv"
+    df = get_csv_data(url)
+    if not df.empty:
+        latest = df.iloc[-1].to_dict()
+        if '正常_異常' in latest:
+            latest['正常_異常'] = '正常' if latest['正常_異常'] in [0, '0'] else '異常'
+        return latest
+    return {}
 
 def get_historical_data():
-    conn = None
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT h.時間戳記, h.心跳, d.溫度, d.濕度, d.體溫, b.BMI
-                FROM heart_rate h
-                JOIN dht11 d ON DATE(h.時間戳記) = DATE(d.時間戳記)
-                JOIN bmi b ON DATE(h.時間戳記) = DATE(b.時間戳記)
-                ORDER BY h.時間戳記 DESC
-                LIMIT 10
-            """)
-            historical_data = cursor.fetchall()
-            for item in historical_data:
-                if '時間戳記' in item:
-                    item['時間戳記'] = item['時間戳記'].isoformat()
-            return historical_data
-    except Exception as e:
-        print(f"獲取歷史數據時出錯: {e}")
-        return []
-    finally:
-        if conn:
-            conn.close()
+    heart_rate_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSULVwFdSh9_HuIJe1dWPae-jzcQYsyYb5DuRfXHtDenUlr1oSYTRr-AQ-aMthcCsNRTcVIbvmt_7qJ/pub?output=csv"
+    dht11_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS5C_o47POhPXTZEgq40budOJB1ygTTZx9D_086I-ZbHfApFPZB_Ra5Xi09Qu6hxzk9_QXJ-7-QFoKD/pub?output=csv"
+    bmi_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTbj3f0rhEu2aCljm1AgkPiaqU7XLGfLUfmL_3NVClYABWXmarViEg1RSE4Q9St0YG_rR74VZyNh7MF/pub?output=csv"
+    
+    heart_rate_df = get_csv_data(heart_rate_url)
+    dht11_df = get_csv_data(dht11_url)
+    bmi_df = get_csv_data(bmi_url)
+    
+    if not heart_rate_df.empty and not dht11_df.empty and not bmi_df.empty:
+        # Check and unify the column names
+        time_column_names = ['時間戳記', 'timestamp', 'time']
+        
+        for df in [heart_rate_df, dht11_df, bmi_df]:
+            for col in time_column_names:
+                if col in df.columns:
+                    df.rename(columns={col: '時間戳記'}, inplace=True)
+                    break
+            else:
+                print(f"Warning: No time column found in DataFrame with columns: {df.columns}")
+                return []
 
+        try:
+            # Merge DataFrames on '時間戳記'
+            merged_df = pd.merge(heart_rate_df, dht11_df, on='時間戳記', how='inner')
+            merged_df = pd.merge(merged_df, bmi_df, on='時間戳記', how='inner')
+        except KeyError as e:
+            print(f"Error during merge: {e}")
+            return []
+        
+        # Select relevant columns and sort data
+        merged_df = merged_df[['時間戳記', '心跳', '溫度', '濕度', '體溫', 'BMI']]
+        merged_df = merged_df.sort_values('時間戳記', ascending=False).head(10)
+        return merged_df.to_dict('records')
+    return []
+
+from flask import Flask, render_template, jsonify
+
+app = Flask(__name__)
 
 @app.route('/')
 def index():
@@ -139,27 +100,20 @@ def index():
     latest_dht11 = get_latest_dht11()
     latest_bmi = get_latest_bmi()
     historical_data = get_historical_data()
+    
     return render_template('heart.html', 
                            heart_rate=latest_heart_rate, 
                            dht11=latest_dht11, 
                            bmi=latest_bmi, 
                            historical_data=historical_data)
 
-i = 0
 @app.route('/get_latest_data')
 def get_latest_data():
-    global i
     try:
-        i = i + 1
-        latest_heart_rate = get_latest_heart_rate()  # Fetch real data instead of mocked
+        latest_heart_rate = get_latest_heart_rate()
         latest_dht11 = get_latest_dht11()
         latest_bmi = get_latest_bmi()
         historical_data = get_historical_data()
-        
-        print("Latest heart rate data fetched:", latest_heart_rate)
-        print("Latest DHT11 data fetched:", latest_dht11)
-        print("Latest BMI data fetched:", latest_bmi)
-        print("Historical data fetched:", historical_data)
 
         return jsonify({
             'heart_rate': latest_heart_rate,
@@ -168,12 +122,12 @@ def get_latest_data():
             'historical_data': historical_data
         })
     except Exception as e:
-        print(f"Error fetching latest data: {e}")
         return jsonify({'error': str(e)}), 500
 
-    
-
 if __name__ == '__main__':
-    serve(app, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)
+
+
+
 
 

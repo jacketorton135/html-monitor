@@ -4,11 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>健康監控</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for the image */
+        .title-with-image {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .title-with-image img {
+            margin-left: 15px;
+            height: 40px; /* Adjust as needed */
+        }
+
+        /* Banner image styles */
+        .banner-image {
+            width: 100%; /* Make sure it scales with screen size */
+            max-width: 600px; /* Control maximum size */
+            height: auto; /* Maintain aspect ratio */
+            display: block;
+            margin: 0 auto; /* Center the banner */
+        }
+
+        /* Additional image styles */
+        .icon-img {
+            height: 50px; /* Adjust as needed */
+            margin-left: 10px;
+        }
+
+        /* Style for the animated GIF at the bottom of historical data */
+        .bottom-gif {
+            width: 120px; /* Make the GIF larger */
+            height: auto;
+            display: block;
+            margin: 20px auto; /* Center the GIF */
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">s
-        <h1 class="text-center mb-4">健康監控</h1>
+    <div class="container mt-5">
+        <div class="title-with-image">
+            <h1 class="text-center mb-4">健康監控</h1>
+            <img id="statusImage" src="" alt="Status Icon" style="height: 40px; margin-left: 15px;" />
+        </div>
+        <img src="https://i.pinimg.com/originals/d4/55/e3/d455e3be112235e6f70ce41be9ffd6d2.gif" 
+             alt="Healthcare Banner" 
+             class="banner-image">
         
         <div class="row">
             <div class="col-md-4 mb-3">
@@ -16,24 +57,27 @@
                     <div class="card-body">
                         <h5 class="card-title">環境身體監控</h5>
                         <p class="card-text">溫度: <span id="temperature"></span>°C</p>
+                        <p class="card-text">溫度狀態: <span id="temperature_status"></span></p>
                         <p class="card-text">濕度: <span id="humidity"></span>%</p>
+                        <p class="card-text">濕度狀態: <span id="humidity_status"></span></p>
                         <p class="card-text">體溫: <span id="body_temperature"></span>°C</p>
+                        <p class="card-text">體溫狀態: <span id="body_temperature_status"></span></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Heart_Rate</h5>
-                        <p class="card-text">心跳: <span id="heart_rate">{{ heart_rate['心跳'] }}</span></p>
-                        <p class="card-text">狀態: <span id="heart_rate_status">{{ heart_rate['心跳狀態'] }}</span></p>
+                        <h5 class="card-title">Heart Rate <img src="https://gifdb.com/images/high/love-heart-breathing-bfacav3ixopbyjz1.webp" class="icon-img" alt="Heart Rate Icon"></h5>
+                        <p class="card-text">心跳: <span id="heart_rate"></span></p>
+                        <p class="card-text">狀態: <span id="heart_rate_status"></span></p>
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">BMI</h5>
+                        <h5 class="card-title">BMI <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/d7634a38516309.588f45a84c8a2.gif" class="icon-img" alt="BMI Icon"></h5>
                         <p class="card-text">BMI: <span id="bmi"></span></p>
                         <p class="card-text">狀態: <span id="bmi_status"></span></p>
                     </div>
@@ -44,7 +88,6 @@
         <div class="row mt-4">
             <div class="col-12">
                 <h2>歷史數據</h2>
-
                 <canvas id="myChart" width="600" height="400"></canvas> 
             </div>
         </div>
@@ -61,33 +104,39 @@
                             <th>Note</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {% for data in historical_data_data %}
-                        <tr>
-                            <td>{{ data.時間 }}</td>
-                            <td>{{ data.數值 }}</td>
-                            <td>{{ data.正常_異常 }}</td>
-                            <td>{{ data.備註 }}</td>
-                        </tr>
-                        {% endfor %}
+                    <tbody id="historicalData">
+                        <!-- Historical data will be inserted here -->
                     </tbody>
                 </table>
+                <img src="https://dtlive.s3.ap-south-1.amazonaws.com/15983/HealthCare-Animated-GIF-Icon-Pack-by-Discover-Template-1.gif" class="bottom-gif" alt="Health Care Animated Icon">
             </div>
         </div>
     </div>
 
     <script>
-  
-        function getRandomData() {
-            return Math.floor(Math.random() * 100);
+        function updateStatusImage(data) {
+            const statusImage = document.getElementById('statusImage');
+            const normalConditions = 
+                data.dht11.溫度狀態 === '溫度正常' &&
+                data.dht11.濕度狀態 === '濕度正常' &&
+                data.dht11.體溫狀態 === '體溫正常' &&
+                data.heart_rate.心跳狀態 === '心跳正常' &&
+                data.bmi.檢查結果 === '正常範圍';
+
+            if (normalConditions) {
+                statusImage.src = "https://media.istockphoto.com/id/1388186992/zh/%E5%90%91%E9%87%8F/yellow-happy-face-vector-symbol-icon.jpg?s=2048x2048&w=is&k=20&c=PImiEkaLs9P_08ZhJufNZ6rwQQIo7ipbGVbnbeN2nYg=";
+            } else {
+                statusImage.src = "https://media.istockphoto.com/id/946592760/zh/%E5%90%91%E9%87%8F/%E5%90%91%E9%87%8F-emoji-%E8%A1%A8%E6%83%85%E7%B4%85%E6%80%92%E6%82%B2%E8%87%89.jpg?s=2048x2048&w=is&k=20&c=yp9GJRdZ_pI4PwsbkPvy8ASQRjDKk9fe2VR-Pe6X0OQ=";
+            }
         }
-        function updateChart(heart_rate,BMI,temperature,body_temperature,humidity) {
+
+        function updateChart(heart_rate, BMI, temperature, body_temperature, humidity) {
             const currentTime = new Date().toLocaleTimeString();
 
             // Add new data point
             if (myChart.data.labels.length >= 10) {
                 myChart.data.labels.shift();
-                myChart.data.datasets[0].data.shift();
+                myChart.data.datasets.forEach(dataset => dataset.data.shift());
             }
 
             myChart.data.labels.push(currentTime);
@@ -98,30 +147,41 @@
             myChart.data.datasets[4].data.push(humidity);
 
             myChart.update();
-            
         }
+
         function updateData() {
             fetch('/get_latest_data')
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);
                     document.getElementById('temperature').textContent = data.dht11.溫度;
+                    document.getElementById('temperature_status').textContent = data.dht11.溫度狀態;
                     document.getElementById('humidity').textContent = data.dht11.濕度;
+                    document.getElementById('humidity_status').textContent = data.dht11.濕度狀態;
                     document.getElementById('body_temperature').textContent = data.dht11.體溫;
+                    document.getElementById('body_temperature_status').textContent = data.dht11.體溫狀態;
                     document.getElementById('heart_rate').textContent = data.heart_rate.心跳;
                     document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
                     document.getElementById('bmi').textContent = data.bmi.BMI;
                     document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
-                    updateChart(data.heart_rate.心跳,data.bmi.BMI,data.dht11.溫度,data.dht11.體溫,data.dht11.濕度,data.heart_rate.心跳狀態,data.bmi.檢查結果);
- 
-
-
-                    
+                    updateChart(data.heart_rate.心跳, data.bmi.BMI, data.dht11.溫度, data.dht11.體溫, data.dht11.濕度);
+                    updateStatusImage(data);
+                    updateHistoricalData(data.historical_data);
                 });
         }
-        function init(){
-            
+
+        function updateHistoricalData(historicalData) {
+            const tbody = document.getElementById('historicalData');
+            tbody.innerHTML = ''; // Clear existing data
+            historicalData.forEach(data => {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = data.時間;
+                row.insertCell(1).textContent = data.數值;
+                row.insertCell(2).textContent = data.正常_異常;
+                row.insertCell(3).textContent = data.備註;
+            });
         }
+
         const ctx = document.getElementById('myChart').getContext('2d');
 
         // Create a new Chart instance
@@ -129,37 +189,42 @@
             type: 'line', // You can change this to 'bar', 'radar', etc.
             data: {
                 labels: [], // x-axis labels
-                datasets: [{
-                    label: 'heart_rate',
-                    data: [], // y-axis data
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderWidth: 1
-                },{
-                    label: 'BMI',
-                    data: [], // y-axis data
-                    borderColor: 'rgba(0, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
-                    borderWidth: 1
-                },{
-                    label: 'temperature',
-                    data: [], // y-axis data
-                    borderColor: 'rgba(0, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
-                    borderWidth: 1   
-                },{
-                    label: 'humidity',
-                    data: [], // y-axis data
-                    borderColor: 'rgba(0, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
-                    borderWidth: 1
-                },{
-                    label: 'body_temperature',
-                    data: [], // y-axis data
-                    borderColor: 'rgba(0, 192, 192, 1)',
-                    backgroundColor: 'rgba(75, 192, 0, 0.2)',
-                    borderWidth: 1 
-                }
+                datasets: [
+                    {
+                        label: 'Heart Rate',
+                        data: [], // y-axis data
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'BMI',
+                        data: [], // y-axis data
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Temperature',
+                        data: [], // y-axis data
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Body Temperature',
+                        data: [], // y-axis data
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Humidity',
+                        data: [], // y-axis data
+                        borderColor: 'rgba(153, 102, 255, 1)',
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        borderWidth: 1
+                    }
                 ]
             },
             options: {
@@ -174,13 +239,11 @@
             }
         });
 
-        // Update data every 5 seconds
+        // Update data every 2 seconds
         setInterval(updateData, 2000);
         updateData();  // Initial update
-
     </script>
 </body>
 </html>
-  
 
 

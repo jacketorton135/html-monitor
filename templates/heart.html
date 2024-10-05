@@ -4,123 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>健康監控</title>
+    <!-- 引入 Chart.js 庫，用於顯示圖表 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Custom styles for the image */
+        /* 標題和圖片的自訂樣式 */
         .title-with-image {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; /* 使用 flex 佈局 */
+            align-items: center; /* 垂直居中對齊 */
+            justify-content: center; /* 水平居中對齊 */
         }
         .title-with-image img {
-            margin-left: 15px;
-            height: 40px; /* Adjust as needed */
+            margin-left: 15px; /* 標題和圖片之間的間距 */
+            height: 40px; /* 調整圖片的高度 */
         }
-<<<<<<< HEAD
-
-        /* Banner image styles */
+        /* 橫幅圖片的樣式 */
         .banner-image {
-            width: 100%; /* Make sure it scales with screen size */
-            max-width: 600px; /* Control maximum size */
-            height: auto; /* Maintain aspect ratio */
-            display: block;
-            margin: 0 auto; /* Center the banner */
+            width: 100%; /* 使圖片隨屏幕大小調整 */
+            max-width: 600px; /* 控制圖片的最大寬度 */
+            height: auto; /* 保持圖片的比例 */
+            display: block; /* 使圖片成為塊元素 */
+            margin: 0 auto; /* 垂直居中顯示圖片 */
         }
-
-        /* Additional image styles */
+        /* 附加圖片樣式 */
         .icon-img {
-            height: 50px; /* Adjust as needed */
-            margin-left: 10px;
+            height: 50px; /* 調整圖片的高度 */
+            margin-left: 10px; /* 圖片左邊距 */
         }
-
-        /* Style for the animated GIF at the bottom of historical data */
+        /* 歷史數據底部動畫 GIF 的樣式 */
         .bottom-gif {
-            width: 120px; /* Make the GIF larger */
-            height: auto;
-            display: block;
-            margin: 20px auto; /* Center the GIF */
+            width: 120px; /* 設置 GIF 的寬度 */
+            height: auto; /* 保持 GIF 的比例 */
+            display: block; /* 使 GIF 成為塊元素 */
+            margin: 20px auto; /* 垂直居中顯示 GIF */
         }
-=======
->>>>>>> 36edd97f99d26c347691272e3f73d7e6cf7171c9
     </style>
 </head>
 <body>
     <div class="container mt-5">
         <div class="title-with-image">
-            <h1 class="text-center mb-4">健康監控</h1>
-            <img id="statusImage" src="" alt="Status Icon" style="height: 40px; margin-left: 15px;" />
+            <h1 class="text-center mb-4">健康監控</h1> <!-- 顯示主標題 -->
+            <img id="statusImage" src="" alt="Status Icon" style="height: 40px; margin-left: 15px;" /> <!-- 顯示狀態圖標 -->
         </div>
         <img src="https://i.pinimg.com/originals/d4/55/e3/d455e3be112235e6f70ce41be9ffd6d2.gif" 
              alt="Healthcare Banner" 
-             class="banner-image">
-        
+             class="banner-image"> <!-- 顯示橫幅圖片 -->
         <div class="row">
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">環境身體監控</h5>
-                        <p class="card-text">溫度: <span id="temperature"></span>°C</p>
-                        <p class="card-text">溫度狀態: <span id="temperature_status"></span></p>
-                        <p class="card-text">濕度: <span id="humidity"></span>%</p>
-                        <p class="card-text">濕度狀態: <span id="humidity_status"></span></p>
-                        <p class="card-text">體溫: <span id="body_temperature"></span>°C</p>
-                        <p class="card-text">體溫狀態: <span id="body_temperature_status"></span></p>
+                        <h5 class="card-title">環境身體監控</h5> <!-- 環境和身體監控標題 -->
+                        <p class="card-text">溫度: <span id="temperature"></span>°C</p> <!-- 顯示溫度 -->
+                        <p class="card-text">溫度狀態: <span id="temperature_status"></span></p> <!-- 顯示溫度狀態 -->
+                        <p class="card-text">濕度: <span id="humidity"></span>%</p> <!-- 顯示濕度 -->
+                        <p class="card-text">濕度狀態: <span id="humidity_status"></span></p> <!-- 顯示濕度狀態 -->
+                        <p class="card-text">體溫: <span id="body_temperature"></span>°C</p> <!-- 顯示體溫 -->
+                        <p class="card-text">體溫狀態: <span id="body_temperature_status"></span></p> <!-- 顯示體溫狀態 -->
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-<<<<<<< HEAD
-                        <h5 class="card-title">Heart Rate <img src="https://gifdb.com/images/high/love-heart-breathing-bfacav3ixopbyjz1.webp" class="icon-img" alt="Heart Rate Icon"></h5>
-=======
-                        <h5 class="card-title">Heart Rate</h5>
->>>>>>> 36edd97f99d26c347691272e3f73d7e6cf7171c9
-                        <p class="card-text">心跳: <span id="heart_rate"></span></p>
-                        <p class="card-text">狀態: <span id="heart_rate_status"></span></p>
+                        <h5 class="card-title">Heart Rate <img src="https://gifdb.com/images/high/love-heart-breathing-bfacav3ixopbyjz1.webp" class="icon-img" alt="Heart Rate Icon"></h5> <!-- 心跳率標題 -->
+                        <p class="card-text">心跳: <span id="heart_rate"></span></p> <!-- 顯示心跳 -->
+                        <p class="card-text">狀態: <span id="heart_rate_status"></span></p> <!-- 顯示心跳狀態 -->
                     </div>
                 </div>
             </div>
             <div class="col-md-4 mb-3">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">BMI <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/d7634a38516309.588f45a84c8a2.gif" class="icon-img" alt="BMI Icon"></h5>
-                        <p class="card-text">BMI: <span id="bmi"></span></p>
-                        <p class="card-text">狀態: <span id="bmi_status"></span></p>
+                        <h5 class="card-title">BMI <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/d7634a38516309.588f45a84c8a2.gif" class="icon-img" alt="BMI Icon"></h5> <!-- BMI 標題 -->
+                        <p class="card-text">BMI: <span id="bmi"></span></p> <!-- 顯示 BMI -->
+                        <p class="card-text">狀態: <span id="bmi_status"></span></p> <!-- 顯示 BMI 狀態 -->
                     </div>
                 </div>
             </div>
         </div>
-
         <div class="row mt-4">
             <div class="col-12">
-                <h2>歷史數據</h2>
-                <canvas id="myChart" width="600" height="400"></canvas> 
+                <h2>歷史數據</h2> <!-- 歷史數據標題 -->
+                <canvas id="myChart" width="600" height="400"></canvas> <!-- 用於顯示圖表的畫布 -->
             </div>
         </div>
-
         <div class="row mt-4">
             <div class="col-12">
-                <h2>歷史紀錄</h2>
+                <h2>歷史紀錄</h2> <!-- 歷史紀錄標題 -->
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Time</th>
-                            <th>Value</th>
-                            <th>Status</th>
-                            <th>Note</th>
+                            <th>時間</th> <!-- 時間 -->
+                            <th>數值</th> <!-- 數值 -->
+                            <th>狀態</th> <!-- 狀態 -->
+                            <th>備註</th> <!-- 備註 -->
                         </tr>
                     </thead>
                     <tbody id="historicalData">
-                        <!-- Historical data will be inserted here -->
+                        <!-- 歷史數據將插入到這裡 -->
                     </tbody>
                 </table>
-                <img src="https://dtlive.s3.ap-south-1.amazonaws.com/15983/HealthCare-Animated-GIF-Icon-Pack-by-Discover-Template-1.gif" class="bottom-gif" alt="Health Care Animated Icon">
+                <img src="https://dtlive.s3.ap-south-1.amazonaws.com/15983/HealthCare-Animated-GIF-Icon-Pack-by-Discover-Template-1.gif" class="bottom-gif" class="bottom-gif" alt="Health Care Animated Icon"> <!-- 顯示底部動畫 GIF -->
             </div>
         </div>
     </div>
-
     <script>
+        // 根據數據更新狀態圖標
         function updateStatusImage(data) {
             const statusImage = document.getElementById('statusImage');
             const normalConditions = 
@@ -129,107 +117,124 @@
                 data.dht11.體溫狀態 === '體溫正常' &&
                 data.heart_rate.心跳狀態 === '心跳正常' &&
                 data.bmi.檢查結果 === '正常範圍';
-
+            // 根據是否符合正常條件選擇不同的圖標
             if (normalConditions) {
                 statusImage.src = "https://media.istockphoto.com/id/1388186992/zh/%E5%90%91%E9%87%8F/yellow-happy-face-vector-symbol-icon.jpg?s=2048x2048&w=is&k=20&c=PImiEkaLs9P_08ZhJufNZ6rwQQIo7ipbGVbnbeN2nYg=";
             } else {
                 statusImage.src = "https://media.istockphoto.com/id/946592760/zh/%E5%90%91%E9%87%8F/%E5%90%91%E9%87%8F-emoji-%E8%A1%A8%E6%83%85%E7%B4%85%E6%80%92%E6%82%B2%E8%87%89.jpg?s=2048x2048&w=is&k=20&c=yp9GJRdZ_pI4PwsbkPvy8ASQRjDKk9fe2VR-Pe6X0OQ=";
             }
         }
-
+        // 更新圖表數據
         function updateChart(heart_rate, BMI, temperature, body_temperature, humidity) {
-            const currentTime = new Date().toLocaleTimeString();
-
-            // Add new data point
+            const currentTime = new Date().toLocaleTimeString(); // 獲取當前時間
+            // 添加新的數據點
             if (myChart.data.labels.length >= 10) {
-                myChart.data.labels.shift();
-                myChart.data.datasets.forEach(dataset => dataset.data.shift());
+                myChart.data.labels.shift(); // 移除最早的時間標籤
+                myChart.data.datasets.forEach(dataset => dataset.data.shift()); // 移除最早的數據
             }
-
+            // 添加新的時間標籤和數據點
             myChart.data.labels.push(currentTime);
             myChart.data.datasets[0].data.push(heart_rate);
             myChart.data.datasets[1].data.push(BMI);
             myChart.data.datasets[2].data.push(temperature);
             myChart.data.datasets[3].data.push(body_temperature);
             myChart.data.datasets[4].data.push(humidity);
-
-            myChart.update();
+            myChart.update(); // 更新圖表
         }
-
-        function updateData() {
-            fetch('/get_latest_data')
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    document.getElementById('temperature').textContent = data.dht11.溫度;
-                    document.getElementById('temperature_status').textContent = data.dht11.溫度狀態;
-                    document.getElementById('humidity').textContent = data.dht11.濕度;
-                    document.getElementById('humidity_status').textContent = data.dht11.濕度狀態;
-                    document.getElementById('body_temperature').textContent = data.dht11.體溫;
-                    document.getElementById('body_temperature_status').textContent = data.dht11.體溫狀態;
-                    document.getElementById('heart_rate').textContent = data.heart_rate.心跳;
-                    document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
-                    document.getElementById('bmi').textContent = data.bmi.BMI;
-                    document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
-                    updateChart(data.heart_rate.心跳, data.bmi.BMI, data.dht11.溫度, data.dht11.體溫, data.dht11.濕度);
-                    updateStatusImage(data);
-                    updateHistoricalData(data.historical_data);
+            let latestRecords = []; // 儲存最新的 10 筆數據
+            function updateData() {
+                fetch('/get_latest_data')
+                    .then(response => response.json())
+                    .then(data => {
+                        // 更新顯示的數據
+                        document.getElementById('temperature').textContent = data.dht11.溫度;
+                        document.getElementById('temperature_status').textContent = data.dht11.溫度狀態;
+                        document.getElementById('humidity').textContent = data.dht11.濕度;
+                        document.getElementById('humidity_status').textContent = data.dht11.濕度狀態;
+                        document.getElementById('body_temperature').textContent = data.dht11.體溫;
+                        document.getElementById('body_temperature_status').textContent = data.dht11.體溫狀態;
+                        document.getElementById('heart_rate').textContent = data.heart_rate.心跳;
+                        document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
+                        document.getElementById('bmi').textContent = data.bmi.BMI;
+                        document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
+                        // 保存最新數據
+                        if (latestRecords.length >= 10) {
+                            latestRecords.shift(); // 移除最早的數據
+                        }
+                        latestRecords.push({
+                            時間: new Date().toLocaleTimeString(),
+                            溫度: data.dht11.溫度,
+                            溫度狀態: data.dht11.溫度狀態,
+                            濕度: data.dht11.濕度,
+                            濕度狀態: data.dht11.濕度狀態,
+                            體溫: data.dht11.體溫,
+                            體溫狀態: data.dht11.體溫狀態,
+                            心跳: data.heart_rate.心跳,
+                            心跳狀態: data.heart_rate.心跳狀態,
+                            BMI: data.bmi.BMI,
+                            BMI狀態: data.bmi.檢查結果,
+                        });
+                        updateChart(data.heart_rate.心跳, data.bmi.BMI, data.dht11.溫度, data.dht11.體溫, data.dht11.濕度);
+                        updateStatusImage(data);
+                        updateHistoricalData(); // 更新歷史數據
+                    });
+            }
+            function updateHistoricalData() {
+                const tbody = document.getElementById('historicalData');
+                tbody.innerHTML = ''; // 清空現有數據
+                const fragment = document.createDocumentFragment(); // 性能優化
+                latestRecords.forEach(record => {
+                    const row = document.createElement('tr'); // 創建新行
+                    row.innerHTML = `
+                        <td>${record.時間}</td>
+                        <td>溫度: ${record.溫度}°C, 濕度: ${record.濕度}%, 體溫: ${record.體溫}°C, 心跳: ${record.心跳}, BMI: ${record.BMI}</td>
+                        <td>溫度狀態: ${record.溫度狀態}, 濕度狀態: ${record.濕度狀態}, 體溫狀態: ${record.體溫狀態}, 心跳狀態: ${record.心跳狀態}, BMI狀態: ${record.BMI狀態}</td>
+                        <td></td> <!-- 備註可保留為空或添加數據 -->
+                    `;
+                    fragment.appendChild(row); // 將行附加到片段
                 });
-        }
-
-        function updateHistoricalData(historicalData) {
-            const tbody = document.getElementById('historicalData');
-            tbody.innerHTML = ''; // Clear existing data
-            historicalData.forEach(data => {
-                const row = tbody.insertRow();
-                row.insertCell(0).textContent = data.時間;
-                row.insertCell(1).textContent = data.數值;
-                row.insertCell(2).textContent = data.正常_異常;
-                row.insertCell(3).textContent = data.備註;
-            });
-        }
-
-        const ctx = document.getElementById('myChart').getContext('2d');
-
-        // Create a new Chart instance
+                tbody.appendChild(fragment); // 將片段附加到表格
+            }
+        const ctx = document.getElementById('myChart').getContext('2d'); // 獲取圖表的上下文
+        // 創建新的圖表實例
         const myChart = new Chart(ctx, {
-            type: 'line', // You can change this to 'bar', 'radar', etc.
+            type: 'line', // 圖表類型
             data: {
-                labels: [], // x-axis labels
+                labels: [], // x 軸標籤
                 datasets: [
                     {
                         label: 'Heart Rate',
-                        data: [], // y-axis data
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        data: [], // y 軸數據
+                        borderColor: 'rgba(255, 99, 132, 1)', // 線條顏色
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)', // 填充顏色
                         borderWidth: 1
                     },
                     {
                         label: 'BMI',
-                        data: [], // y-axis data
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        data: [], // y 軸數據
+                        borderColor: 'rgba(54, 162, 235, 1)', // 線條顏色
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)', // 填充顏色
                         borderWidth: 1
                     },
                     {
                         label: 'Temperature',
-                        data: [], // y-axis data
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        data: [], // y 軸數據
+                        borderColor: 'rgba(255, 206, 86, 1)', // 線條顏色
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)', // 填充顏色
                         borderWidth: 1
                     },
                     {
                         label: 'Body Temperature',
-                        data: [], // y-axis data
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        data: [], // y 軸數據
+                        borderColor: 'rgba(75, 192, 192, 1)', // 線條顏色
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)', // 填充顏色
                         borderWidth: 1
                     },
                     {
                         label: 'Humidity',
-                        data: [], // y-axis data
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                        data: [], // y 軸數據
+                        borderColor: 'rgba(153, 102, 255, 1)', // 線條顏色
+                        backgroundColor: 'rgba(153, 102, 255, 0.2)', // 填充顏色
                         borderWidth: 1
                     }
                 ]
@@ -237,20 +242,20 @@
             options: {
                 scales: {
                     x: {
-                        beginAtZero: true
+                        beginAtZero: true // x 軸從零開始
                     },
                     y: {
-                        beginAtZero: true
+                        beginAtZero: true // y 軸從零開始
                     }
                 }
             }
         });
-
-        // Update data every 2 seconds
+        // 每 2 秒更新一次數據
         setInterval(updateData, 2000);
-        updateData();  // Initial update
+        updateData();  // 初始更新
     </script>
 </body>
 </html>
+
 
 

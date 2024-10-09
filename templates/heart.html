@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -103,10 +104,10 @@
                         <!-- 歷史數據將插入到這裡 -->
                     </tbody>
                 </table>
-                <img src="https://dtlive.s3.ap-south-1.amazonaws.com/15983/HealthCare-Animated-GIF-Icon-Pack-by-Discover-Template-1.gif" class="bottom-gif" class="bottom-gif" alt="Health Care Animated Icon"> <!-- 顯示底部動畫 GIF -->
+                <img src="https://dtlive.s3.ap-south-1.amazonaws.com/15983/HealthCare-Animated-GIF-Icon-Pack-by-Discover-Template-1.gif" class="bottom-gif" alt="Health Care Animated Icon"> <!-- 顯示底部動畫 GIF -->
             </div>
         </div>
-    </div>
+
     <script>
         // 根據數據更新狀態圖標
         function updateStatusImage(data) {
@@ -141,60 +142,60 @@
             myChart.data.datasets[4].data.push(humidity);
             myChart.update(); // 更新圖表
         }
-            let latestRecords = []; // 儲存最新的 10 筆數據
-            function updateData() {
-                fetch('/get_latest_data')
-                    .then(response => response.json())
-                    .then(data => {
-                        // 更新顯示的數據
-                        document.getElementById('temperature').textContent = data.dht11.溫度;
-                        document.getElementById('temperature_status').textContent = data.dht11.溫度狀態;
-                        document.getElementById('humidity').textContent = data.dht11.濕度;
-                        document.getElementById('humidity_status').textContent = data.dht11.濕度狀態;
-                        document.getElementById('body_temperature').textContent = data.dht11.體溫;
-                        document.getElementById('body_temperature_status').textContent = data.dht11.體溫狀態;
-                        document.getElementById('heart_rate').textContent = data.heart_rate.心跳;
-                        document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
-                        document.getElementById('bmi').textContent = data.bmi.BMI;
-                        document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
-                        // 保存最新數據
-                        if (latestRecords.length >= 10) {
-                            latestRecords.shift(); // 移除最早的數據
-                        }
-                        latestRecords.push({
-                            時間: new Date().toLocaleTimeString(),
-                            溫度: data.dht11.溫度,
-                            溫度狀態: data.dht11.溫度狀態,
-                            濕度: data.dht11.濕度,
-                            濕度狀態: data.dht11.濕度狀態,
-                            體溫: data.dht11.體溫,
-                            體溫狀態: data.dht11.體溫狀態,
-                            心跳: data.heart_rate.心跳,
-                            心跳狀態: data.heart_rate.心跳狀態,
-                            BMI: data.bmi.BMI,
-                            BMI狀態: data.bmi.檢查結果,
-                        });
-                        updateChart(data.heart_rate.心跳, data.bmi.BMI, data.dht11.溫度, data.dht11.體溫, data.dht11.濕度);
-                        updateStatusImage(data);
-                        updateHistoricalData(); // 更新歷史數據
+        let latestRecords = []; // 儲存最新的 10 筆數據
+        function updateData() {
+            fetch('/get_latest_data')
+                .then(response => response.json())
+                .then(data => {
+                    // 更新顯示的數據
+                    document.getElementById('temperature').textContent = data.dht11.溫度;
+                    document.getElementById('temperature_status').textContent = data.dht11.溫度狀態;
+                    document.getElementById('humidity').textContent = data.dht11.濕度;
+                    document.getElementById('humidity_status').textContent = data.dht11.濕度狀態;
+                    document.getElementById('body_temperature').textContent = data.dht11.體溫;
+                    document.getElementById('body_temperature_status').textContent = data.dht11.體溫狀態;
+                    document.getElementById('heart_rate').textContent = data.heart_rate.心跳;
+                    document.getElementById('heart_rate_status').textContent = data.heart_rate.心跳狀態;
+                    document.getElementById('bmi').textContent = data.bmi.BMI;
+                    document.getElementById('bmi_status').textContent = data.bmi.檢查結果;
+                    // 保存最新數據
+                    if (latestRecords.length >= 10) {
+                        latestRecords.shift(); // 移除最早的數據
+                    }
+                    latestRecords.push({
+                        時間: new Date().toLocaleTimeString(),
+                        溫度: data.dht11.溫度,
+                        溫度狀態: data.dht11.溫度狀態,
+                        濕度: data.dht11.濕度,
+                        濕度狀態: data.dht11.濕度狀態,
+                        體溫: data.dht11.體溫,
+                        體溫狀態: data.dht11.體溫狀態,
+                        心跳: data.heart_rate.心跳,
+                        心跳狀態: data.heart_rate.心跳狀態,
+                        BMI: data.bmi.BMI,
+                        BMI狀態: data.bmi.檢查結果,
                     });
-            }
-            function updateHistoricalData() {
-                const tbody = document.getElementById('historicalData');
-                tbody.innerHTML = ''; // 清空現有數據
-                const fragment = document.createDocumentFragment(); // 性能優化
-                latestRecords.forEach(record => {
-                    const row = document.createElement('tr'); // 創建新行
-                    row.innerHTML = `
-                        <td>${record.時間}</td>
-                        <td>溫度: ${record.溫度}°C, 濕度: ${record.濕度}%, 體溫: ${record.體溫}°C, 心跳: ${record.心跳}, BMI: ${record.BMI}</td>
-                        <td>溫度狀態: ${record.溫度狀態}, 濕度狀態: ${record.濕度狀態}, 體溫狀態: ${record.體溫狀態}, 心跳狀態: ${record.心跳狀態}, BMI狀態: ${record.BMI狀態}</td>
-                        <td></td> <!-- 備註可保留為空或添加數據 -->
-                    `;
-                    fragment.appendChild(row); // 將行附加到片段
+                    updateChart(data.heart_rate.心跳, data.bmi.BMI, data.dht11.溫度, data.dht11.體溫, data.dht11.濕度);
+                    updateStatusImage(data);
+                    updateHistoricalData(); // 更新歷史數據
                 });
-                tbody.appendChild(fragment); // 將片段附加到表格
-            }
+        }
+        function updateHistoricalData() {
+            const tbody = document.getElementById('historicalData');
+            tbody.innerHTML = ''; // 清空現有數據
+            const fragment = document.createDocumentFragment(); // 性能優化
+            latestRecords.forEach(record => {
+                const row = document.createElement('tr'); // 創建新行
+                row.innerHTML = `
+                    <td>${record.時間}</td>
+                    <td>溫度: ${record.溫度}°C, 濕度: ${record.濕度}%, 體溫: ${record.體溫}°C, 心跳: ${record.心跳}, BMI: ${record.BMI}</td>
+                    <td>溫度狀態: ${record.溫度狀態}, 濕度狀態: ${record.濕度狀態}, 體溫狀態: ${record.體溫狀態}, 心跳狀態: ${record.心跳狀態}, BMI狀態: ${record.BMI狀態}</td>
+                    <td></td> <!-- 備註可保留為空或添加數據 -->
+                `;
+                fragment.appendChild(row); // 將行附加到片段
+            });
+            tbody.appendChild(fragment); // 將片段附加到表格
+        }
         const ctx = document.getElementById('myChart').getContext('2d'); // 獲取圖表的上下文
         // 創建新的圖表實例
         const myChart = new Chart(ctx, {
@@ -256,6 +257,7 @@
     </script>
 </body>
 </html>
+
 
 
 

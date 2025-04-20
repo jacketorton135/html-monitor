@@ -68,3 +68,64 @@ CSS 樣式
 .bottom-gif: 設置底部動態 GIF 的大小和對齊方式。
 小結
 這段 HTML 文件結合了靜態頁面結構和動態數據更新功能。它利用 Chart.js 繪製健康監控數據圖表，通過定時更新從伺服器獲取的數據來保持信息的即時性。頁面使用了 Bootstrap 的網格系統來進行布局設計，並用自定義的 CSS 來設計頁面元素的樣式。
+
+
+
+
+🧱 一、HTML（網頁骨架）
+HTML 是「網頁內容的基本結構」，你可以把它想成房子的 鋼筋水泥結構。
+
+在這份 HTML 裡：
+
+<div class="card">...</div> 是每一個「健康資訊區塊」
+
+<form id="riskForm">...</form> 是心臟病風險的「使用者輸入表單」
+
+<table> 是「歷史紀錄表格」
+
+<canvas> 是用來顯示圖表的畫布
+
+👉 HTML 幫你定義：有哪些內容、文字、表單欄位 等。
+
+🎨 二、Bootstrap（網頁美化 + 響應式排版）
+Bootstrap 是一套「前端 UI 框架」，它幫你快速做出 漂亮又響應式（手機、平板、電腦自動調整） 的排版。
+
+在你這份頁面中：
+
+class="container"、class="row"、class="col-md-4"：這些是 Bootstrap 的網格系統，幫你把卡片區塊平均分成三欄。
+
+class="form-control"、class="btn btn-primary"：這些是 Bootstrap 幫你設計的輸入框、按鈕樣式。
+
+整個畫面都整齊美觀，得歸功於 Bootstrap。
+
+👉 Bootstrap 幫你定義：排版、配色、樣式、響應式佈局。
+
+⚙️ 三、jQuery（資料互動）
+jQuery 是 JavaScript 的一個輕量級函式庫，它讓你寫 JS 更簡潔。你用 jQuery 來做的事包括：
+
+✅ AJAX 表單送出（心臟病預測）
+js
+複製
+編輯
+$('#riskForm').on('submit', function(event) {
+    // 送資料到後端 /predict，然後顯示預測結果
+});
+✅ 每 2 秒抓一次健康數據（AJAX 實時更新）
+js
+複製
+編輯
+setInterval(updateData, 2000); // 每兩秒抓一次 /get_latest_data 的資料
+✅ DOM 操作：改變 HTML 元素內容
+js
+複製
+編輯
+$('#prediction-text').html(`預測結果：...`);
+👉 jQuery 幫你做：和伺服器互動（AJAX）、修改畫面內容、處理事件點擊。
+
+總結小表格 🧩
+
+技術	用途	你這頁裡的功能
+HTML	結構、內容	表單、卡片、表格、圖片
+Bootstrap	美化、排版、響應式	三欄排版、按鈕樣式、表單
+jQuery	前端互動、AJAX 非同步請求	自動更新資料、提交預測表單、顯示結果
+

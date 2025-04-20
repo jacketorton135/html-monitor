@@ -104,28 +104,22 @@ class="form-control"、class="btn btn-primary"：這些是 Bootstrap 幫你設�
 jQuery 是 JavaScript 的一個輕量級函式庫，它讓你寫 JS 更簡潔。你用 jQuery 來做的事包括：
 
 ✅ AJAX 表單送出（心臟病預測）
-js
-複製
-編輯
+
 $('#riskForm').on('submit', function(event) {
     // 送資料到後端 /predict，然後顯示預測結果
 });
 ✅ 每 2 秒抓一次健康數據（AJAX 實時更新）
 js
-複製
-編輯
+
 setInterval(updateData, 2000); // 每兩秒抓一次 /get_latest_data 的資料
 ✅ DOM 操作：改變 HTML 元素內容
 js
-複製
-編輯
+
 $('#prediction-text').html(`預測結果：...`);
 👉 jQuery 幫你做：和伺服器互動（AJAX）、修改畫面內容、處理事件點擊。
 
 總結小表格 🧩
 
-技術	用途	你這頁裡的功能
-HTML	結構、內容	表單、卡片、表格、圖片
-Bootstrap	美化、排版、響應式	三欄排版、按鈕樣式、表單
-jQuery	前端互動、AJAX 非同步請求	自動更新資料、提交預測表單、顯示結果
+![image](https://github.com/user-attachments/assets/8ea91abd-e4bd-4105-89dd-fcf8354e8ad4)
+
 
